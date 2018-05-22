@@ -1,9 +1,12 @@
 (ns clj-parser.core
   (:require [clojure.test :refer :all]))
 
-;; Parser :: String -> [[<parsed-string>], <remaining-string>]
-
-(def extract-value first)
+;; A parser is a function which accepts a string.
+;; When the parsing is successful, the function returns a vector with two elements. The first element is the parsed value, and the second elemnt is the remaining string.
+;;
+;; On unsuccessful parsing, the return value is `nil`
+;; Then type definition would look like this -
+;; parser-fn :: String -> [<parsed-value>, <remaining-string>]
 
 (defn satisfy [f]
   (fn [s]
@@ -14,7 +17,7 @@
 (defn parse-char [ch]
   (satisfy #(= % ch)))
 
-(defn compose-parser [p1 p2]
+(defn compose-parsers [p1 p2]
   (fn [s]
     (if-let [[p1f rs1 :as p1-parsed] (p1 s)]
       (if-let [[p2f rs2 :as p2-parsed] (p2 rs1)]
@@ -50,7 +53,7 @@
     (if-let [[p-str rem-str] (p s)]
       [(f p-str) rem-str])))
 
-(def <=> compose-parser)
+(def <=> compose-parsers)
 (def <* compose-left)
 (def *> compose-right)
 (def <|> compose-or)
@@ -63,6 +66,12 @@
 (defn optional-parser [val]
   (fn [s]
     [val s]))
+
+(defn optional [parser default-value]
+  (fn [s]
+    (if-let [result (parser s)]
+      result
+      [default-value s])))
 
 (declare one-or-more)
 
@@ -99,7 +108,7 @@
 
 (def neg-int
   (-> (parse-char \-)
-      (compose-parser pos-int)))
+      (<=> pos-int)))
 
 (def any-int
   (<|> neg-int pos-int))
@@ -130,36 +139,29 @@
 (def any-number
   (<|> neg-number pos-number))
 
-(defn make-parser [s format-fn parser]
-  (fmap format-fn (parser s)))
+(def parse-pos-int
+  (<f> pos-int safe-to-int))
 
-(defn parse-pos-int [s]
-  (make-parser s safe-to-int pos-int))
+(def parse-neg-int
+  (<f> neg-int safe-to-int))
 
-(defn parse-neg-int [s]
-  (make-parser s safe-to-int neg-int))
+(def parse-any-int
+  (<f> any-int safe-to-int))
 
-(defn parse-any-int [s]
-  (make-parser s safe-to-int any-int))
+(def parse-pos-double
+  (<f> pos-double safe-to-double))
 
-(defn parse-pos-double [s]
-  (make-parser s safe-to-double pos-double))
+(def parse-neg-double
+  (<f> neg-double safe-to-double))
 
-(defn parse-neg-double [s]
-  (make-parser s safe-to-double neg-double))
+(def parse-pos-double
+  (<f> pos-double safe-to-double))
 
-(defn parse-pos-double [s]
-  (make-parser s safe-to-double pos-double))
+(def parse-pos-number
+  (<f> pos-number safe-to-double))
 
-(defn parse-pos-number [s]
-  (make-parser s safe-to-double pos-number))
+(def parse-neg-number
+  (<f> neg-number safe-to-double))
 
-(defn parse-neg-number [s]
-  (make-parser s safe-to-double neg-number))
-
-(defn parse-any-number [s]
-  (make-parser s safe-to-double any-number))
-
-(defn parse-any-number [s]
-  (make-parser s safe-to-double any-number))
-
+(def parse-any-number
+  (<f> any-number safe-to-double))

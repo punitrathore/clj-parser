@@ -1,10 +1,13 @@
 # clj-parser
 
-A Clojure library designed to ... well, that part is up to you.
+This is a simple parser designed for high reusability and composibility.
 
 ## Usage
 
-FIXME
+
+```clj
+
+```
 
 ## License
 
