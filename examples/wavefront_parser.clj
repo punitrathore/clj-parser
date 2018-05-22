@@ -31,7 +31,7 @@
       (<* spaces)
       (<=> parse-any-number)
       (<* spaces)
-      (<=> (<|> parse-any-number (optional-parser 1.0)))
+      (<=> (<|> parse-any-number (optional-value 1.0)))
       (<f> new-vertex)))
 
 (def parse-vline
@@ -44,7 +44,7 @@
       (<* spaces)
       (<=> parse-any-number)
       (<* spaces)
-      (<=> (<|> parse-any-number (optional-parser 0.0)))
+      (<=> (<|> parse-any-number (optional-value 0.0)))
       (<f> new-tc)))
 
 (def parse-tc-line
@@ -68,11 +68,11 @@
       (*> parse-normal)))
 
 (def parse-face-element
-  (-> (<|> parse-any-int (optional-parser 0))
+  (-> (<|> parse-any-int (optional-value 0))
       (<* (parse-char \/))
-      (<=> (<|> parse-any-int (optional-parser 0)))
+      (<=> (<|> parse-any-int (optional-value 0)))
       (<* (parse-char \/))
-      (<=> (<|> parse-any-int (optional-parser 0)))
+      (<=> (<|> parse-any-int (optional-value 0)))
       (<f> new-face-element)))
 
 (def parse-face-line
@@ -92,10 +92,6 @@
       (<|> parse-face-line)))
 
 (defn parse-file [file-path]
-  (with-open [rdr (clojure.java.io/reader "./sample.txt")]
-    (reduce (fn [acc ]))))
-
-(defn parse-file [file-path]
   (group-by class
             (with-open [rdr (clojure.java.io/reader file-path)]
               (reduce (fn [acc ln]
@@ -105,7 +101,7 @@
                       [] (line-seq rdr)))))
 
 (comment
-  (parse-file "./examples/sample.txt")
+  (parse-file "./examples/sample-wavefront.txt")
 
   (parse-vline "v 3.2 2.01 -32.0")
   (parse-tc-line "vt 0.555 0.000 0.555")

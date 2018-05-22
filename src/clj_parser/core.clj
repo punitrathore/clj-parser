@@ -63,15 +63,18 @@
   (fn [s]
     ["" s]))
 
-(defn optional-parser [val]
+(defn optional-value [val]
   (fn [s]
     [val s]))
 
-(defn optional [parser default-value]
-  (fn [s]
-    (if-let [result (parser s)]
-      result
-      [default-value s])))
+(defn optional-parser
+  ([parser]
+   (optional-parser parser ""))
+  ([parser default-value]
+   (fn [s]
+     (if-let [result (parser s)]
+       result
+       [default-value s]))))
 
 (declare one-or-more)
 
@@ -90,11 +93,14 @@
 (def digit
   (satisfy #(Character/isDigit %)))
 
-(def spaces (zero-or-more (parse-char \ )))
+(def alphanumeric
+  (satisfy #(Character/isLetterOrDigit %)))
 
-(defn fmap [f [parsed-result remaining-str :as result]]
-  (if result
-        [(f parsed-result) remaining-str]))
+(def word
+  (<* (one-or-more alphanumeric)
+      (optional-parser (parse-char \ ))))
+
+(def spaces (zero-or-more (parse-char \ )))
 
 (defn safe-to-double [s]
   (if s
