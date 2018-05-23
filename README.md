@@ -90,7 +90,9 @@ Since writing `compose-parsers` can be a little tedious for us lazy folks, you c
 Sometimes we want to use two parsers, and proceed if either one succeeds. To make that happen we have the function `compose-or` or the symbol `<|>`. Lets look at an example -
 
 ```clj
-;; Suppose we want to parse log files which begin with "LOG: " or with "WARN: ". We want to be able to parse both of them out. We shall create two parsers and combine them using our `compose-or` function.
+;; Suppose we want to parse log files which begin with "LOG: " or with "WARN: ".
+;; We want to be able to parse both of them out. We shall create two parsers and
+;; combine them using our `compose-or` function.
 
 (def parse-log (parse-word "LOG: "))
 
@@ -105,6 +107,54 @@ Sometimes we want to use two parsers, and proceed if either one succeeds. To mak
 (parse-log-line "WARN: hello")
 ;; => ["WARN: " "hello"]
 ```
+
+### Composing Right
+
+Sometimes we want to discard the results of our first parser, and we are only interested in the results of the second parser. The function `compose-right` or `*>` does exactly that. For example, we may want to eliminate spaces before parsing. Here is an example -
+
+```clj
+(def parse-log (parse-log "LOG: "))
+
+(def parse-log-line
+    (*> spaces parse-log))
+
+(parse-log-line "  LOG: The water makes its journey...")
+;; => ["LOG: " "The water makes its journey..."]
+```
+
+### Composing Left
+
+Similar to compose-left, but instead the function `compose-left` or `<*` discards the results of the second parser, and we are only interested in the results of the first parser. For example, we may want to eliminate spaces before parsing. Here is an example -
+
+```clj
+;; If we want to trim the whitespace after parsing a word
+
+(def parse-word-no-whitespaces
+    (<* word spaces ))
+
+(parse-word-no-whitespaces "Wooordddd    ")
+;; => ["Wooordddd" ""]
+```
+
+### Compose a function
+
+After parsing, we may want to apply a function to the parsed string. This is where we use `compose-apply` or `<f>`. This is especially useful when we want to convert the parsed string into a different datatype. Lets look at an example -
+
+```clj
+
+(def s "123.23")
+(any-number "123.23 abc")
+;; => ["123.12" " abc"]
+
+;; This is parsed out as a string, it would be nice if this could be parsed as
+;; a `Double` value.
+
+(def double-parser (<f> any-number #(Double/parseDouble %)))
+(double-parser "123.23 abc")
+;; => [123.23 " abc"]
+```
+
+For a more extravagant example, look at the [Wavefront Format Parser](./examples/wavefront_parser.clj).
 
 ## License
 
