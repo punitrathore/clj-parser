@@ -6,7 +6,7 @@
 ;;
 ;; On unsuccessful parsing, the return value is `nil`
 ;; Then type definition would look like this -
-;; parser-fn :: String -> [<parsed-value>, <remaining-string>]
+;; parser-fn :: <string> -> [<parsed-value>, <remaining-string>]
 
 (defn satisfy [f]
   (fn [s]
