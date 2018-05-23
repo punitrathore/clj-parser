@@ -12,7 +12,7 @@ When the parsing is successful, the function returns a vector with two elements.
 
 On unsuccessful parsing, the return value is `nil`
 
-This should be clearer with an example
+This should be clearer with an example -
 
 ```clj
 (defn first-letter-should-be-A [s]
@@ -28,7 +28,7 @@ This should be clearer with an example
 
 So we have created a simple parser which checks if the string starts with the character `A`.
 
-If you let your imagination run wild, you can begin to see how this way of creating parsers could get tedious and repetitive. To keep things DRY there is a helper function called `satisfy`. Lets see how to create the same parser using it.
+If you let your imagination run wild, you can begin to see how this way of creating parsers could get tedious and repetitive. To keep things DRY there is a helper function called `satisfy`. Lets recreate the above parser using `satisfy` -
 
 ```clj
 (def first-letter-should-be-A-revisited [s]
@@ -40,7 +40,7 @@ If you let your imagination run wild, you can begin to see how this way of creat
 ;; => nil
 ```
 
-This looks much nicer and cleaner. So `satisfy` is a function, which takes a predicate, and checks if the first character of the given string satisfies the predicate. With `satisfy` we can build some really useful parsers. The function `parse-char`. `digit` and `alphanumeric` have been implemented using the `satisfy` function.
+This looks much nicer and cleaner. So `satisfy` is a function, which takes a predicate, and checks if the first character of the given string satisfies the predicate. With `satisfy` we can build some really useful parsers. The functions `parse-char`, `digit` and `alphanumeric` have been implemented using the `satisfy` function.
 
 ```clj
 ((parse-char \B)) "Blue sky")
@@ -84,6 +84,37 @@ Since writing `compose-parsers` can be a little tedious for us lazy folks, you c
 (parse-log "LOG: abcd")
 ;; => ["LOG: " "abcd"]
 ```
+
+### Composing Either
+
+Sometimes we want to use two parsers, and proceed if either one succeeds. To make that happen we have the function `compose-or` or the symbol `<|>`. Lets look at an example -
+
+```clj
+;; Suppose we want to parse log files which begin with "LOG: " or with "WARN: ". We want to be able to parse both of them out. We shall create two parsers and combine them using our `compose-or` function.
+
+(def parse-log
+    (-> (parse-char \L)
+        (<=> (parse-char \O))
+        (<=> (parse-char \G))
+        (<=> (parse-char \:))
+        (<=> (parse-char \ ))))
+
+(def parse-warn
+    (-> (parse-char \W)
+        (<=> (parse-char \A))
+        (<=> (parse-char \R))
+        (<=> (parse-char \N))
+        (<=> (parse-char \:))
+        (<=> (parse-char \ ))))
+
+(def parse-log-line
+    (<|> parse-log parse-warn))
+
+(parse-log-line "LOG: abcd")
+;; => ["LOG: " "abcd"]
+
+(parse-log-line "WARN: hello")
+;; => ["WARN: " "hello"]
 
 ## License
 
