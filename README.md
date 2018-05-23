@@ -104,6 +104,7 @@ Sometimes we want to use two parsers, and proceed if either one succeeds. To mak
 
 (parse-log-line "WARN: hello")
 ;; => ["WARN: " "hello"]
+```
 
 ## License
 
