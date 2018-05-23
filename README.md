@@ -79,7 +79,7 @@ There are a couple of other helper functions that are useful. `one-or-more` take
 
 ### Composing Parsers
 
-Now that we have some basic building blocks in place to parse characters, it would be nice to be able to combine them to build more powerful parsers. For example, lets say I want to parse the characters "LOG: " out of the string which begins with log. This is how we would do it
+Now that we have some basic building blocks in place to parse characters, it would be nice to be able to combine them to build more powerful parsers. For example, lets say I want to parse the characters "LOG: " out of log line. This is how we would do it -
 
 ```clj
 
