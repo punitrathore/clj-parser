@@ -14,14 +14,6 @@
       (if (and fch (f fch))
         [(str fch) (apply str (rest s))]))))
 
-(defn parse-char [ch]
-  (satisfy #(= % ch)))
-
-(defn parse-word [word]
-  (reduce (fn [parser ch]
-            (<=> parser (parse-char ch)))
-          identity-parser word))
-
 (defn compose-parsers [p1 p2]
   (fn [s]
     (if-let [[p1f rs1 :as p1-parsed] (p1 s)]
@@ -63,6 +55,14 @@
 (def *> compose-right)
 (def <|> compose-or)
 (def <f> compose-apply)
+
+(defn parse-char [ch]
+  (satisfy #(= % ch)))
+
+(defn parse-word [word]
+  (reduce (fn [parser ch]
+            (<=> parser (parse-char ch)))
+          identity-parser word))
 
 (def identity-parser
   (fn [s]
