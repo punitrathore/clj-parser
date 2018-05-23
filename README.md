@@ -2,15 +2,15 @@
 
 This is a simple parser designed for high reusability and composibility.
 
-## Usage
-
-### What is a parser
+## What is a parser
 
 A parser is a simple function that takes an input string, and performs some computation on that string.
 
 When the parsing is successful, the function returns a vector with two elements. The first element is the parsed value, and the second element is the remaining string.
 
 On unsuccessful parsing, the return value is `nil`
+
+## Usage
 
 This should be clearer with an example -
 
@@ -62,6 +62,9 @@ There are a couple of other helper functions that are useful. `one-or-more` take
 
 (number "123 abc")
 ;; => ["123" " abc"]
+
+(number "abc")
+;; => nil
 
 ```
 
