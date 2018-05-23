@@ -149,7 +149,7 @@ Sometimes we want to discard the results of our first parser, and we are only in
 
 ### Composing Left
 
-Similar to compose-left, but instead the function `compose-left` or `<*` discards the results of the second parser, and we are only interested in the results of the first parser. For example, we may want to eliminate spaces before parsing. Here is an example -
+Similar to compose-right, but instead the function `compose-left` or `<*` discards the results of the second parser, and we are only interested in the results of the first parser. For example, we may want to eliminate spaces before parsing. Here is an example -
 
 ```clj
 ;; If we want to trim the whitespace after parsing a word
