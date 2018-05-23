@@ -29,6 +29,9 @@
     (is (= [22 "abc"] (parser "20abc")))
     (is (= nil (parser "abc")))))
 
+(deftest test-parse-word
+  (is (= ["bliss" " everywhere"] ((parse-word "bliss") "bliss everywhere"))))
+
 (deftest test-parsers
   (let [cp (parse-char \c)]
     (testing "zero-or-more"

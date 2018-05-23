@@ -17,6 +17,11 @@
 (defn parse-char [ch]
   (satisfy #(= % ch)))
 
+(defn parse-word [word]
+  (reduce (fn [parser ch]
+            (<=> parser (parse-char ch)))
+          identity-parser word))
+
 (defn compose-parsers [p1 p2]
   (fn [s]
     (if-let [[p1f rs1 :as p1-parsed] (p1 s)]

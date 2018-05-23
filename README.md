@@ -92,20 +92,9 @@ Sometimes we want to use two parsers, and proceed if either one succeeds. To mak
 ```clj
 ;; Suppose we want to parse log files which begin with "LOG: " or with "WARN: ". We want to be able to parse both of them out. We shall create two parsers and combine them using our `compose-or` function.
 
-(def parse-log
-    (-> (parse-char \L)
-        (<=> (parse-char \O))
-        (<=> (parse-char \G))
-        (<=> (parse-char \:))
-        (<=> (parse-char \ ))))
+(def parse-log (parse-word "LOG: "))
 
-(def parse-warn
-    (-> (parse-char \W)
-        (<=> (parse-char \A))
-        (<=> (parse-char \R))
-        (<=> (parse-char \N))
-        (<=> (parse-char \:))
-        (<=> (parse-char \ ))))
+(def parse-warn (parse-word "WARN: "))
 
 (def parse-log-line
     (<|> parse-log parse-warn))
