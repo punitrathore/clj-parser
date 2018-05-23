@@ -55,6 +55,28 @@ This looks much nicer and cleaner. So `satisfy` is a function, which takes a pre
 ;; => ["1" "23"]
 ```
 
+There are a couple of other helper functions that are useful. `one-or-more` takes a parser and runs that parser successfully until it can't run it anymore. A caveat is that this function requires the parser to successfully run **at aleast** once. Lets look at an example
+
+```clj
+(def number (one-or-more digit))
+
+(number "123 abc")
+;; => ["123" " abc"]
+
+```
+
+`zero-or-more` is like the function `one-or-more` except it allows the parser to be unsuccessful, and returns an empty string if completely unsuccessful. For example -
+
+```clj
+(def spaces (zero-or-more (parse-char \ )))
+
+(spaces "   123")
+;; => ["   " "123"]
+
+(spaces "123")
+;; => ["" "123"]
+```
+
 ### Composing Parsers
 
 Now that we have some basic building blocks in place to parse characters, it would be nice to be able to combine them to build more powerful parsers. For example, lets say I want to parse the characters "LOG: " out of the string which begins with log. This is how we would do it
