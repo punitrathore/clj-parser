@@ -12,7 +12,7 @@ On unsuccessful parsing, the return value is `nil`
 
 ## Usage
 
-This should be clearer with an example -
+Here is an example of a parser -
 
 ```clj
 (defn first-letter-should-be-A [s]
@@ -110,6 +110,25 @@ Since writing `compose-parsers` can be a little tedious for us lazy folks, you c
 ;; => ["LOG: " "abcd"]
 ```
 
+`<=>` behaves differently based on return type of the parsed value. If the first parser returns a string, then the result of the first parser is concatenated with the second parser. For example -
+
+```clj
+((<=> (parse-char \a) (parse-char \b)) "abcd")
+;; => ["ab" "cd"]
+
+If the first parser returns a non-stringy value, an array containing the two values are returned.
+
+((<=> parse-pos-int (parse-word "hello")) "123hello")
+;; => [[123 "hello"] ""]
+
+((-> (parse-word "aloha")
+     (<=> parse-pos-int)
+     (<=>  (parse-word "hello")))
+     "aloha123hello")
+
+;; => [["aloha" 123 "hello"] ""]
+```
+
 ### Composing Either
 
 Sometimes we want to use two parsers, and proceed if either one succeeds. To make that happen we have the function `compose-or` or the symbol `<|>`. Lets look at an example -
@@ -149,7 +168,7 @@ Sometimes we want to discard the results of our first parser, and we are only in
 
 ### Composing Left
 
-Similar to compose-right, but instead the function `compose-left` or `<*` discards the results of the second parser, and we are only interested in the results of the first parser. For example, we may want to eliminate spaces before parsing. Here is an example -
+Similar to `compose-right`, but instead the function `compose-left` or `<*` discards the results of the second parser, and we are only interested in the results of the first parser. For example, we may want to strip the spaces at the end of the string. Here is an example -
 
 ```clj
 ;; If we want to trim the whitespace after parsing a word
