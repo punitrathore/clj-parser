@@ -13,13 +13,13 @@ On unsuccessful parsing, the return value is `nil`
 ## Usage
 
 ```clj
-    ;; Add the following to your `project.clj` file:
-    [clj-parser "0.1.0"]
+;; Add the following to your `project.clj` file:
+[clj-parser "0.1.0"]
 
 
-    ;; in your ns statement:
-    (ns my.project
-        (:require [clj-parser.core :refer :all]))
+;; in your ns statement:
+(ns my.project
+    (:require [clj-parser.core :refer :all]))
 ```
 
 Here is an example of a parser -
