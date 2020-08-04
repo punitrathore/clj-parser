@@ -59,14 +59,14 @@
 (defn parse-char [ch]
   (satisfy #(= % ch)))
 
+(def identity-parser
+  (fn [s]
+    ["" s]))
+
 (defn parse-word [word]
   (reduce (fn [parser ch]
             (<=> parser (parse-char ch)))
           identity-parser word))
-
-(def identity-parser
-  (fn [s]
-    ["" s]))
 
 (defn optional-value [val]
   (fn [s]
